@@ -1,0 +1,12 @@
+*.000
+*.bak
+*.bck
+*.dsn
+*.kicad_pcb-bak
+*.tmp
+*~
+/*.csv
+/*.net
+/*.ses
+/*.xml
+_autosave-*
