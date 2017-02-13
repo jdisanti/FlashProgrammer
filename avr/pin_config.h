@@ -7,7 +7,7 @@
 #define _CLEAR(type, name, bit)			type ## name  &= ~ _BV(bit)
 #define _TOGGLE(type, name, bit)		type ## name  ^= _BV(bit)
 #define _GET(type, name, bit)			((type ## name >> bit) &  1)
-#define _PUT(type, name, bit, value)	type ## name = (type ## name & (~_BV(bit))) | ((1 & (uint8_t) value) << bit)
+#define _PUT(type, name, bit, value)	type ## name = (type ## name & (~_BV(bit))) | ((1 & (uint8_t) (value)) << (bit))
 
 #define INPUT	0
 #define OUTPUT	1
@@ -50,9 +50,13 @@
 #define PIN_TXD				D,1
 #define PIN_PGM_L			D,2
 #define PIN_STU				D,3
-#define PIN_UNUSED_PD4		D,4
+#define PIN_A16				D,4
 #define PIN_D3				D,5
 #define PIN_D4				D,6
 #define PIN_D5				D,7
+
+void init_pins();
+void data_output_mode();
+void data_input_mode();
 
 #endif /* PIN_CONFIG_H_ */
