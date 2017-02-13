@@ -1,6 +1,6 @@
 (fp_lib_table
   (lib (name ssop-16)(type KiCad)(uri "$(KIPRJMOD)/ssop-16.pretty")(options "")(descr ""))
-  (lib (name DBG_PAD)(type KiCad)(uri "$(KIPRJMOD)/DBG_PAD.pretty")(options "")(descr ""))
   (lib (name logo)(type KiCad)(uri "$(KIPRJMOD)/logo.pretty")(options "")(descr ""))
   (lib (name TQFP_32_7mm_0.8mm_pitch)(type KiCad)(uri "$(KIPRJMOD)/TQFP_32_7mm_0.8mm_pitch.pretty")(options "")(descr ""))
+  (lib (name USB_B_Female)(type KiCad)(uri "$(KIPRJMOD)\\USB_B_Female.pretty")(options "")(descr ""))
 )
