@@ -2,11 +2,11 @@ import serial
 
 ser = serial.Serial();
 ser.baudrate = 38400
-ser.port = 'COM5'
+ser.port = 'COM4'
 ser.open()
 
 if not ser.is_open:
-    print("Failed to open COM5")
+    print("Failed to open serial connection")
     exit(1)
 
 

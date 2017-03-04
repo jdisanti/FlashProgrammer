@@ -1,4 +1,5 @@
 #include <avr/io.h>
+#include <util/delay.h>
 
 #include "pin_config.h"
 #include "uart.h"
@@ -40,9 +41,11 @@ typedef enum {
 	READ_GET_ADDRESS = 1,
 	READ_RETURN_DATA = 3,
 
-	WRITE_GET_ADDRESS = 4,
-	WRITE_GET_DATA = 5,
-	WRITE_DATA = 6,
+	WRITE_BEGIN = 4,
+	WRITE_BYTE = 5,
+	WRITE_END = 6,
+
+	ERASE = 7,
 } state_t;
 
 // Receiving a 0x55 goes into read mode, and a 0xAA goes into write mode
@@ -54,9 +57,9 @@ state_t handle_null_state() {
 			SET_PIN_HIGH(PIN_STU);
 			return READ_GET_ADDRESS;
 		} else if (0xAA == msg) {
-			// TODO: Figure out what to do to enable write mode on the flash chip
-			// TODO: data_output_mode();
-			return WRITE_GET_ADDRESS;
+			return WRITE_BEGIN;
+		} else if (0xEE == msg) {
+			return ERASE;
 		}
 	}
 	return NULL_STATE;
@@ -90,18 +93,60 @@ state_t handle_read_return_data() {
 	return NULL_STATE;
 }
 
-state_t handle_write_get_address() {
-	read_address_from_uart();
-	return WRITE_GET_DATA;
+uint32_t g_write_address;
+
+state_t handle_write_begin() {
+	g_write_address = 0;
+
+	SET_PIN_LOW(PIN_STU);
+
+	SET_PIN_LOW(PIN_CE_L);
+	SET_PIN_HIGH(PIN_OE_L);
+
+	data_output_mode();
+	return WRITE_BYTE;
 }
 
-state_t handle_write_get_data() {
-	// TODO
+state_t handle_write_byte() {
+	const uint8_t data = uart::receive_byte();
+	set_data(data);
+	set_address(g_write_address);
+
+	_delay_us(5); // Tces
+	SET_PIN_LOW(PIN_PGM_L);
+	_delay_us(25); // Tpw
+	SET_PIN_HIGH(PIN_PGM_L);
+	_delay_us(5); // Tvph
+
+	g_write_address++;
+	if (g_write_address > 0x0001FFFF) {
+		return WRITE_END;
+	} else {
+		return WRITE_BYTE;
+	}
+}
+
+state_t handle_write_end() {
+	SET_PIN_HIGH(PIN_CE_L);
+	SET_PIN_LOW(PIN_OE_L);
+	data_input_mode();
+
+	SET_PIN_HIGH(PIN_STU);
 	return NULL_STATE;
 }
 
-state_t handle_write_data() {
-	// TODO
+state_t handle_erase() {
+	set_address(0x00000100);
+	SET_PIN_LOW(PIN_STU);
+	SET_PIN_HIGH(PIN_CE_L);
+	_delay_us(5);
+	SET_PIN_LOW(PIN_PGM_L);
+	_delay_ms(200);
+	SET_PIN_HIGH(PIN_PGM_L);
+	_delay_us(5);
+	SET_PIN_LOW(PIN_CE_L);
+	SET_PIN_HIGH(PIN_STU);
+	set_address(0);
 	return NULL_STATE;
 }
 
@@ -113,12 +158,14 @@ state_t handle_state(state_t state) {
 		return handle_read_get_address();
 	case READ_RETURN_DATA:
 		return handle_read_return_data();
-	case WRITE_GET_ADDRESS:
-		return handle_write_get_address();
-	case WRITE_GET_DATA:
-		return handle_write_get_data();
-	case WRITE_DATA:
-		return handle_write_data();
+	case WRITE_BEGIN:
+		return handle_write_begin();
+	case WRITE_BYTE:
+		return handle_write_byte();
+	case WRITE_END:
+		return handle_write_end();
+	case ERASE:
+		return handle_erase();
 	}
 	return NULL_STATE;
 }
