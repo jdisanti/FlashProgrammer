@@ -189,7 +189,7 @@ Connection ~ 1400 2000
 Connection ~ 1400 1900
 Text Label 1400 1700 1    60   ~ 0
 A[0..16]
-Text Label 7150 4750 1    60   ~ 0
+Text Label 8150 6150 2    60   ~ 0
 A[0..16]
 Wire Wire Line
 	3050 2500 3900 2500
@@ -347,13 +347,13 @@ $EndComp
 $Comp
 L GND #PWR?
 U 1 1 58BA7CFB
-P 9800 3050
-F 0 "#PWR?" H 9800 2800 50  0001 C CNN
-F 1 "GND" H 9800 2900 50  0000 C CNN
-F 2 "" H 9800 3050 50  0000 C CNN
-F 3 "" H 9800 3050 50  0000 C CNN
-	1    9800 3050
-	0    -1   -1   0   
+P 6900 5500
+F 0 "#PWR?" H 6900 5250 50  0001 C CNN
+F 1 "GND" H 6900 5350 50  0000 C CNN
+F 2 "" H 6900 5500 50  0000 C CNN
+F 3 "" H 6900 5500 50  0000 C CNN
+	1    6900 5500
+	1    0    0    -1  
 $EndComp
 $Comp
 L VCC #PWR?
@@ -499,13 +499,13 @@ $EndComp
 $Comp
 L R R?
 U 1 1 58BA7EA3
-P 3050 6200
-F 0 "R?" V 3130 6200 50  0000 C CNN
-F 1 "10k" V 3050 6200 50  0000 C CNN
-F 2 "Resistors_SMD:R_0805_HandSoldering" V 2980 6200 50  0001 C CNN
-F 3 "" H 3050 6200 50  0000 C CNN
-	1    3050 6200
-	-1   0    0    1   
+P 6300 5200
+F 0 "R?" V 6380 5200 50  0000 C CNN
+F 1 "1k" V 6300 5200 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805_HandSoldering" V 6230 5200 50  0001 C CNN
+F 3 "" H 6300 5200 50  0000 C CNN
+	1    6300 5200
+	0    -1   -1   0   
 $EndComp
 Wire Wire Line
 	3050 5950 3050 6050
@@ -548,41 +548,170 @@ D[0..7]
 $Comp
 L D_Schottky D?
 U 1 1 58BAFC52
-P 6400 5050
-F 0 "D?" H 6400 5150 50  0000 C CNN
-F 1 "BAT54" H 6400 4950 50  0000 C CNN
-F 2 "" H 6400 5050 50  0000 C CNN
-F 3 "" H 6400 5050 50  0000 C CNN
-	1    6400 5050
-	1    0    0    -1  
+P 7750 5400
+F 0 "D?" H 7750 5500 50  0000 C CNN
+F 1 "BAT54" H 7750 5300 50  0000 C CNN
+F 2 "" H 7750 5400 50  0000 C CNN
+F 3 "" H 7750 5400 50  0000 C CNN
+	1    7750 5400
+	0    1    1    0   
 $EndComp
 Wire Bus Line
-	7150 5050 7150 4350
+	8450 6150 7750 6150
 Wire Wire Line
-	7150 5050 6550 5050
-Text Label 6750 5050 0    60   ~ 0
+	7750 5550 7750 6150
+Text Label 7750 5950 1    60   ~ 0
 A9
-Wire Wire Line
-	5400 5050 6250 5050
-Wire Wire Line
-	7150 5350 5900 5350
-Text Label 6750 5350 0    60   ~ 0
-VPP
-Wire Wire Line
-	5900 5350 5900 5050
-Connection ~ 5900 5050
-Text Label 5500 5050 0    60   ~ 0
-A9_P
 Wire Wire Line
 	3050 2400 3450 2400
 Text Label 3150 2400 0    60   ~ 0
 A9_P
-Text Notes 5150 5550 0    60   ~ 0
-TODO: VPP needs to be disconnected somehow when not in write mode
 Wire Wire Line
 	5100 7600 6350 7600
 Text HLabel 6350 7600 2    60   Input ~ 0
 STU
 Text Label 5250 7600 0    60   ~ 0
 STU
+$Comp
+L Q_NPN_BCE Q?
+U 1 1 58BEF822
+P 6800 5200
+F 0 "Q?" H 7000 5250 50  0000 L CNN
+F 1 "2N3904" H 7000 5150 50  0000 L CNN
+F 2 "" H 7000 5300 50  0000 C CNN
+F 3 "" H 6800 5200 50  0000 C CNN
+	1    6800 5200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7750 4850 7750 5250
+Wire Wire Line
+	7750 5000 8300 5000
+Text Label 8100 5000 0    60   ~ 0
+A9_P
+Wire Wire Line
+	7350 4650 7450 4650
+Wire Wire Line
+	7050 4650 6900 4650
+Wire Wire Line
+	6900 4200 6900 5000
+Wire Wire Line
+	6900 4200 7750 4200
+Wire Wire Line
+	7750 4200 7750 4450
+Text Label 7300 4000 1    60   ~ 0
+VPP
+Wire Wire Line
+	7300 4200 7300 3800
+Connection ~ 7300 4200
+Connection ~ 6900 4650
+Wire Wire Line
+	6900 5400 6900 5500
+$Comp
+L Q_NPN_BCE Q?
+U 1 1 58BF03A4
+P 7650 4650
+F 0 "Q?" H 7850 4700 50  0000 L CNN
+F 1 "2N3904" H 7850 4600 50  0000 L CNN
+F 2 "" H 7850 4750 50  0000 C CNN
+F 3 "" H 7650 4650 50  0000 C CNN
+	1    7650 4650
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R?
+U 1 1 58BF0471
+P 7200 4650
+F 0 "R?" V 7280 4650 50  0000 C CNN
+F 1 "1k" V 7200 4650 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805_HandSoldering" V 7130 4650 50  0001 C CNN
+F 3 "" H 7200 4650 50  0000 C CNN
+	1    7200 4650
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	6450 5200 6600 5200
+$Comp
+L Q_NPN_BCE Q?
+U 1 1 58BF0576
+P 5750 5500
+F 0 "Q?" H 5950 5550 50  0000 L CNN
+F 1 "2N3904" H 5950 5450 50  0000 L CNN
+F 2 "" H 5950 5600 50  0000 C CNN
+F 3 "" H 5750 5500 50  0000 C CNN
+	1    5750 5500
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR?
+U 1 1 58BF059E
+P 5850 5800
+F 0 "#PWR?" H 5850 5550 50  0001 C CNN
+F 1 "GND" H 5850 5650 50  0000 C CNN
+F 2 "" H 5850 5800 50  0000 C CNN
+F 3 "" H 5850 5800 50  0000 C CNN
+	1    5850 5800
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5850 5050 5850 5300
+Wire Wire Line
+	5850 5200 6150 5200
+Wire Wire Line
+	5850 5700 5850 5800
+$Comp
+L R R?
+U 1 1 58BF0846
+P 5850 4900
+F 0 "R?" V 5930 4900 50  0000 C CNN
+F 1 "10k" V 5850 4900 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805_HandSoldering" V 5780 4900 50  0001 C CNN
+F 3 "" H 5850 4900 50  0000 C CNN
+	1    5850 4900
+	1    0    0    -1  
+$EndComp
+Connection ~ 5850 5200
+$Comp
+L VCC #PWR?
+U 1 1 58BF0A83
+P 5850 4600
+F 0 "#PWR?" H 5850 4450 50  0001 C CNN
+F 1 "VCC" H 5850 4750 50  0000 C CNN
+F 2 "" H 5850 4600 50  0000 C CNN
+F 3 "" H 5850 4600 50  0000 C CNN
+	1    5850 4600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5850 4600 5850 4750
+Wire Wire Line
+	5550 5500 5350 5500
+$Comp
+L R R?
+U 1 1 58BF0CDC
+P 5200 5500
+F 0 "R?" V 5280 5500 50  0000 C CNN
+F 1 "1k" V 5200 5500 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805_HandSoldering" V 5130 5500 50  0001 C CNN
+F 3 "" H 5200 5500 50  0000 C CNN
+	1    5200 5500
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	5050 5500 4750 5500
+Text Label 4750 5500 0    60   ~ 0
+STU
+Wire Notes Line
+	5000 4200 5000 6150
+Wire Notes Line
+	5000 6150 6100 6150
+Wire Notes Line
+	6100 6150 6100 4200
+Wire Notes Line
+	6100 4200 5000 4200
+Text Notes 4900 4150 0    60   ~ 0
+Logical NOT on the STU line
+Connection ~ 7750 5000
+Text Notes 5600 3700 0    60   ~ 0
+TODO: Test this A9_P circuit
 $EndSCHEMATC
