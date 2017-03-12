@@ -390,17 +390,17 @@ Wire Wire Line
 	8350 2250 7200 2250
 Wire Wire Line
 	8350 2150 7200 2150
-Text Label 8250 3450 0    60   ~ 0
-D0
 Text Label 8250 3350 0    60   ~ 0
+D0
+Text Label 8250 3450 0    60   ~ 0
 D1
 Text Label 8250 2750 0    60   ~ 0
 D2
-Text Label 8250 2150 0    60   ~ 0
+Text Label 8250 2350 0    60   ~ 0
 D3
 Text Label 8250 2250 0    60   ~ 0
 D4
-Text Label 8250 2350 0    60   ~ 0
+Text Label 8250 2150 0    60   ~ 0
 D5
 Text Label 8250 2450 0    60   ~ 0
 D6
