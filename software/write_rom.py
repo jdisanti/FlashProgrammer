@@ -1,7 +1,7 @@
 import serial
 
 ser = serial.Serial();
-ser.baudrate = 250000
+ser.baudrate = 500000
 ser.port = 'COM5'
 ser.open()
 

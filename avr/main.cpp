@@ -38,8 +38,7 @@ void set_data(uint8_t data) {
 typedef enum {
 	NULL_STATE = 0,
 
-	READ_GET_ADDRESS = 1,
-	READ_RETURN_DATA = 3,
+	READ = 1,
 
 	WRITE_BEGIN = 4,
 	WRITE_BYTE = 5,
@@ -53,9 +52,7 @@ state_t handle_null_state() {
 	if (uart::byte_available()) {
 		uint8_t msg = uart::receive_byte();
 		if (0x55 == msg) {
-			data_input_mode();
-			SET_PIN_HIGH(PIN_VPP_12V_EN_L);
-			return READ_GET_ADDRESS;
+			return READ;
 		} else if (0xAA == msg) {
 			return WRITE_BEGIN;
 		} else if (0xEE == msg) {
@@ -65,31 +62,37 @@ state_t handle_null_state() {
 	return NULL_STATE;
 }
 
-static void read_address_from_uart() {
+static uint32_t read_address_from_uart() {
 	const uint32_t upper = uart::receive_byte() & 1;
 	const uint32_t hi = uart::receive_byte();
 	const uint32_t lo = uart::receive_byte();
-	const uint32_t address = (upper << 16) | (hi << 8) | lo;
-	set_address(address);
+	return (upper << 16) | (hi << 8) | lo;
 }
 
 // Retrieves the desired address and sets it on the bus
-state_t handle_read_get_address() {
-	read_address_from_uart();
-	return READ_RETURN_DATA;
-}
+state_t handle_read() {
+	uint32_t start = read_address_from_uart();
+	uint32_t end = read_address_from_uart();
 
-state_t handle_read_return_data() {
-	uint8_t data = 0;
-	data = data | GET_PIN(PIN_D0);
-	data = data | (GET_PIN(PIN_D1) << 1);
-	data = data | (GET_PIN(PIN_D2) << 2);
-	data = data | (GET_PIN(PIN_D3) << 3);
-	data = data | (GET_PIN(PIN_D4) << 4);
-	data = data | (GET_PIN(PIN_D5) << 5);
-	data = data | (GET_PIN(PIN_D6) << 6);
-	data = data | (GET_PIN(PIN_D7) << 7);
-	uart::send_byte(data);
+	SET_PIN_LOW(PIN_CE_L);
+	SET_PIN_LOW(PIN_OE_L);
+	data_input_mode();
+
+	for (; start != end; start++) {
+		set_address(start);
+		_delay_us(1);
+
+		uint8_t data = 0;
+		data = data | GET_PIN(PIN_D0);
+		data = data | (GET_PIN(PIN_D1) << 1);
+		data = data | (GET_PIN(PIN_D2) << 2);
+		data = data | (GET_PIN(PIN_D3) << 3);
+		data = data | (GET_PIN(PIN_D4) << 4);
+		data = data | (GET_PIN(PIN_D5) << 5);
+		data = data | (GET_PIN(PIN_D6) << 6);
+		data = data | (GET_PIN(PIN_D7) << 7);
+		uart::send_byte(data);
+	}
 	return NULL_STATE;
 }
 
@@ -160,10 +163,8 @@ state_t handle_state(state_t state) {
 	switch (state) {
 	case NULL_STATE:
 		return handle_null_state();
-	case READ_GET_ADDRESS:
-		return handle_read_get_address();
-	case READ_RETURN_DATA:
-		return handle_read_return_data();
+	case READ:
+		return handle_read();
 	case WRITE_BEGIN:
 		return handle_write_begin();
 	case WRITE_BYTE:

@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define UART_BAUD_RATE		250000UL
+#define UART_BAUD_RATE		500000UL
 
 namespace uart {
 	void init();
