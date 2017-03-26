@@ -78,6 +78,7 @@ state_t handle_read() {
 	SET_PIN_LOW(PIN_OE_L);
 	data_input_mode();
 
+	uint8_t checksum = 0;
 	for (; start != end; start++) {
 		set_address(start);
 		_delay_us(1);
@@ -92,7 +93,9 @@ state_t handle_read() {
 		data = data | (GET_PIN(PIN_D6) << 6);
 		data = data | (GET_PIN(PIN_D7) << 7);
 		uart::send_byte(data);
+		checksum += data;
 	}
+	uart::send_byte(-checksum);
 	return NULL_STATE;
 }
 

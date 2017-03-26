@@ -9,6 +9,8 @@ const ROM_SIZE: usize = 131072;
 
 const COMMAND_READ: u8 = 0x55;
 
+const MAX_FAILURES: usize = 3;
+
 fn push_address(buffer: &mut Vec<u8>, address: usize) {
     buffer.push((address >> 16) as u8);
     buffer.push((address >> 8) as u8);
@@ -37,17 +39,35 @@ pub fn read_rom<P: AsRef<Path>>(device: &str, output_path: P) {
         let end_index = start_index + BLOCK_SIZE;
 
         println!("Reading {} byte block {} of {}...", BLOCK_SIZE, block_index + 1, block_count);
+        let mut failures = 0;
+        loop {
+            let mut command: Vec<u8> = Vec::new();
+            command.push(COMMAND_READ);
+            push_address(&mut command, start_index);
+            push_address(&mut command, end_index);
+            if let Err(err) = serial_port.write_all(&command) {
+                panic!("Failed to send read command: {}", err);
+            }
 
-        let mut command: Vec<u8> = Vec::new();
-        command.push(COMMAND_READ);
-        push_address(&mut command, start_index);
-        push_address(&mut command, end_index);
-        if let Err(err) = serial_port.write_all(&command) {
-            panic!("Failed to send read command: {}", err);
-        }
+            if let Err(err) = serial_port.read_exact(&mut block) {
+                panic!("Failed to read data from the ROM: {}", err);
+            }
 
-        if let Err(err) = serial_port.read_exact(&mut block) {
-            panic!("Failed to read data from the ROM: {}", err);
+            let mut checksum = [0u8; 1];
+            if let Err(err) = serial_port.read_exact(&mut checksum) {
+                panic!("Failed to read checksum from ROM: {}", err);
+            }
+
+            // Verify the checksum and retry if it fails
+            if 0 == checksum[0].wrapping_add(block.iter().fold(0, |acc, &data| acc.wrapping_add(data))) {
+                // Block read successfully; don't retry
+                break;
+            } else if failures < MAX_FAILURES {
+                println!("Checksum verification failed. Retrying block.");
+                failures += 1;
+            } else {
+                panic!("Failed to read block too many times. Giving up.");
+            }
         }
 
         file_contents.extend(block.iter());
