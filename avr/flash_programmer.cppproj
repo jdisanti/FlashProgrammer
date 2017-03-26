@@ -190,10 +190,19 @@
     <Compile Include="pin_config.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="read.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="states.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="uart.cpp">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="uart.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="write.cpp">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>

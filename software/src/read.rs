@@ -38,7 +38,7 @@ pub fn read_rom<P: AsRef<Path>>(device: &str, output_path: P) {
         let start_index = block_index * BLOCK_SIZE;
         let end_index = start_index + BLOCK_SIZE;
 
-        println!("Reading {} byte block {} of {}...", BLOCK_SIZE, block_index + 1, block_count);
+        println!("Reading {} byte block {} of {} (0x{:06X} - 0x{:06X})...", BLOCK_SIZE, block_index + 1, block_count, start_index, end_index);
         let mut failures = 0;
         loop {
             let mut command: Vec<u8> = Vec::new();
@@ -47,6 +47,14 @@ pub fn read_rom<P: AsRef<Path>>(device: &str, output_path: P) {
             push_address(&mut command, end_index);
             if let Err(err) = serial_port.write_all(&command) {
                 panic!("Failed to send read command: {}", err);
+            }
+
+            let mut ack = [0u8; 1];
+            if let Err(err) = serial_port.read_exact(&mut ack) {
+                panic!("Error receiving ACK from flash programmer: {}", err);
+            }
+            if ack[0] != 0 {
+                panic!("Bad ACK from flash programmer: 0x{:02X}", ack[0]);
             }
 
             if let Err(err) = serial_port.read_exact(&mut block) {

@@ -10,7 +10,7 @@ namespace uart {
 	bool can_immediately_transmit();
 	void send_byte(uint8_t value);
 	bool byte_available();
-	uint8_t receive_byte();
+	bool receive_byte(uint8_t *result);
 }
 
 #endif /* UART_H_ */

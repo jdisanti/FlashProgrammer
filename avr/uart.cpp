@@ -30,10 +30,27 @@ namespace uart {
 		return UCSR0A & (1 << RXC0);
 	}
 
-	uint8_t receive_byte() {
-		while (!byte_available())
-			;
-		return UDR0;
+	bool receive_byte(uint8_t *result) {
+		// Calculate a timeout value of 100 milliseconds
+		const uint16_t timeout_val = (uint16_t) ((F_CPU / 1024) / 10);
+
+		// Use F_CPU/1024 prescaler in CTC mode, and start the timer
+		TCCR1B = (1 << WGM12) | (1 << CS10) | (1 << CS12);
+		TCNT1 = 0;
+		OCR1A = timeout_val;
+		TIFR1 |= (1 << OCF1A); // Reset the timer
+
+		while (!byte_available()) {
+			// If our timer expired
+			if (TIFR1 & (1 << OCF1A)) {
+				// Reset the timer
+				TIFR1 |= (1 << OCF1A);
+				return false;
+			}
+		}
+
+		*result = UDR0;
+		return true;
 	}
 
 }

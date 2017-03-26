@@ -58,5 +58,7 @@
 void init_pins();
 void data_output_mode();
 void data_input_mode();
+void set_address(uint32_t address);
+void set_data(uint8_t data);
 
 #endif /* PIN_CONFIG_H_ */

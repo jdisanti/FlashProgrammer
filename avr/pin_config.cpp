@@ -51,3 +51,34 @@ void init_pins() {
 
 	SET_OUTPUT(PIN_A16);
 }
+
+// Sets the address based on the least significant 17 bits of the passed in address value
+void set_address(uint32_t address) {
+	// Disable shift register output
+	SET_PIN_HIGH(PIN_A_OE_L);
+
+	SET_PIN_LOW(PIN_A_RCK);
+	for (int i = 15; i >= 0; i--) {
+		SET_PIN_LOW(PIN_A_SCK);
+		SET_PIN(PIN_A_SER, address >> i);
+		SET_PIN_HIGH(PIN_A_SCK);
+	}
+	SET_PIN_HIGH(PIN_A_RCK);
+	SET_PIN_LOW(PIN_A_RCK);
+
+	SET_PIN(PIN_A16, address >> 16);
+
+	// Enable shift register output
+	SET_PIN_LOW(PIN_A_OE_L);
+}
+
+void set_data(uint8_t data) {
+	SET_PIN(PIN_D0, data);
+	SET_PIN(PIN_D1, data >> 1);
+	SET_PIN(PIN_D2, data >> 2);
+	SET_PIN(PIN_D3, data >> 3);
+	SET_PIN(PIN_D4, data >> 4);
+	SET_PIN(PIN_D5, data >> 5);
+	SET_PIN(PIN_D6, data >> 6);
+	SET_PIN(PIN_D7, data >> 7);
+}
