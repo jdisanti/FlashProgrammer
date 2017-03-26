@@ -1,0 +1,8 @@
+[package]
+name = "flash_programmer"
+version = "0.1.0"
+authors = ["John DiSanti <johndisanti@gmail.com>"]
+
+[dependencies]
+clap = "2.22"
+serial = "0.3"
