@@ -1,14 +1,13 @@
 import serial
 
 ser = serial.Serial();
-ser.baudrate = 38400
-ser.port = 'COM4'
+ser.baudrate = 250000
+ser.port = 'COM5'
 ser.open()
 
 if not ser.is_open:
     print("Failed to open serial connection")
     exit(1)
-
 
 for address in range(0, 131072):
     ser.write(b'\x55')

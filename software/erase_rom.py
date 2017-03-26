@@ -14,9 +14,3 @@ if not ser.is_open:
 ser.write(b'\xEE')
 print("Chip erased")
 
-# Write a few bytes
-ser.write(b'\xAA')
-for address in range(0, 0x00020000):
-    ser.write(b'\xEA')
-
-print("Bytes written")

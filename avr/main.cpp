@@ -7,21 +7,21 @@
 // Sets the address based on the least significant 17 bits of the passed in address value
 void set_address(uint32_t address) {
 	// Disable shift register output
-	SET_PIN_HIGH(PIN_AOE);
+	SET_PIN_HIGH(PIN_A_OE_L);
 
-	SET_PIN_LOW(PIN_RCK);
+	SET_PIN_LOW(PIN_A_RCK);
 	for (int i = 15; i >= 0; i--) {
-		SET_PIN_LOW(PIN_SCK);
-		SET_PIN(PIN_SER, address >> i);
-		SET_PIN_HIGH(PIN_SCK);
+		SET_PIN_LOW(PIN_A_SCK);
+		SET_PIN(PIN_A_SER, address >> i);
+		SET_PIN_HIGH(PIN_A_SCK);
 	}
-	SET_PIN_HIGH(PIN_RCK);
-	SET_PIN_LOW(PIN_RCK);
+	SET_PIN_HIGH(PIN_A_RCK);
+	SET_PIN_LOW(PIN_A_RCK);
 
 	SET_PIN(PIN_A16, address >> 16);
 
 	// Enable shift register output
-	SET_PIN_LOW(PIN_AOE);
+	SET_PIN_LOW(PIN_A_OE_L);
 }
 
 void set_data(uint8_t data) {
@@ -54,7 +54,7 @@ state_t handle_null_state() {
 		uint8_t msg = uart::receive_byte();
 		if (0x55 == msg) {
 			data_input_mode();
-			SET_PIN_HIGH(PIN_STU);
+			SET_PIN_HIGH(PIN_VPP_12V_EN_L);
 			return READ_GET_ADDRESS;
 		} else if (0xAA == msg) {
 			return WRITE_BEGIN;
@@ -98,7 +98,7 @@ uint32_t g_write_address;
 state_t handle_write_begin() {
 	g_write_address = 0;
 
-	SET_PIN_LOW(PIN_STU);
+	SET_PIN_LOW(PIN_VPP_12V_EN_L);
 
 	SET_PIN_LOW(PIN_CE_L);
 	SET_PIN_HIGH(PIN_OE_L);
@@ -131,22 +131,28 @@ state_t handle_write_end() {
 	SET_PIN_LOW(PIN_OE_L);
 	data_input_mode();
 
-	SET_PIN_HIGH(PIN_STU);
+	SET_PIN_HIGH(PIN_VPP_12V_EN_L);
 	return NULL_STATE;
 }
 
 state_t handle_erase() {
-	set_address(0x00000100);
-	SET_PIN_LOW(PIN_STU);
-	SET_PIN_HIGH(PIN_CE_L);
-	_delay_us(5);
-	SET_PIN_LOW(PIN_PGM_L);
-	_delay_ms(200);
-	SET_PIN_HIGH(PIN_PGM_L);
-	_delay_us(5);
-	SET_PIN_LOW(PIN_CE_L);
-	SET_PIN_HIGH(PIN_STU);
 	set_address(0);
+	SET_PIN_LOW(PIN_A9_VPP_EN_L);
+	SET_PIN_LOW(PIN_VPP_12V_EN_L);
+	// It takes about 400 microseconds for the MAX662A's output to reach 12V
+	_delay_us(400);
+	SET_PIN_LOW(PIN_CE_L);
+	SET_PIN_HIGH(PIN_OE_L);
+	_delay_us(1);
+	SET_PIN_LOW(PIN_PGM_L);
+	_delay_ms(100);
+	SET_PIN_HIGH(PIN_PGM_L);
+	_delay_us(1);
+	SET_PIN_HIGH(PIN_VPP_12V_EN_L);
+	SET_PIN_HIGH(PIN_A9_VPP_EN_L);
+	SET_PIN_LOW(PIN_OE_L);
+	set_address(0);
+	_delay_us(1);
 	return NULL_STATE;
 }
 

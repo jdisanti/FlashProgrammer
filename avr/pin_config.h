@@ -26,20 +26,20 @@
 /* Pin configs */
 
 // Port B
-#define PIN_D6				B,0
-#define PIN_D2				B,1
-#define PIN_D7				B,2
-#define PIN_D1				B,3
-#define PIN_D0				B,4
-#define PIN_ISP_SCK			B,5
-#define PIN_UNUSED_PB6		B,6
-#define PIN_UNUSED_PB7		B,7
+#define PIN_D5				B,0
+#define PIN_D4				B,1
+#define PIN_D3				B,2
+#define PIN_D6				B,3
+#define PIN_D2				B,4
+#define PIN_D7				B,5
+#define PIN_D0				B,6
+#define PIN_D1				B,7
 
 // Port C
-#define PIN_RCK				C,0
-#define PIN_SCK				C,1
-#define PIN_SER				C,2
-#define PIN_AOE				C,3
+#define PIN_UNUSED_PC0		C,0
+#define PIN_UNUSED_PC1		C,1
+#define PIN_A_SCK			C,2
+#define PIN_A_RCK			C,3
 #define PIN_CE_L			C,4
 #define PIN_OE_L			C,5
 #define PIN_ISP_RST_L		C,6
@@ -49,11 +49,11 @@
 #define PIN_RXD				D,0
 #define PIN_TXD				D,1
 #define PIN_PGM_L			D,2
-#define PIN_STU				D,3
-#define PIN_A16				D,4
-#define PIN_D3				D,5
-#define PIN_D4				D,6
-#define PIN_D5				D,7
+#define PIN_A_OE_L			D,3
+#define PIN_A_SER			D,4
+#define PIN_A16				D,5
+#define PIN_VPP_12V_EN_L	D,6
+#define PIN_A9_VPP_EN_L		D,7
 
 void init_pins();
 void data_output_mode();
