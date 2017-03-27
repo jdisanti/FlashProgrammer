@@ -1,4 +1,5 @@
 #include <avr/io.h>
+#include <util/delay.h>
 
 #include "pin_config.h"
 
@@ -39,17 +40,26 @@ void init_pins() {
 	SET_OUTPUT(PIN_VPP_12V_EN_L);
 	SET_PIN_HIGH(PIN_A9_VPP_EN_L);
 	SET_OUTPUT(PIN_A9_VPP_EN_L);
+
 	SET_OUTPUT(PIN_PGM_L);
-	SET_OUTPUT(PIN_CE_L);
+	SET_PIN_LOW(PIN_PGM_L);
 	SET_OUTPUT(PIN_OE_L);
+	SET_PIN_LOW(PIN_OE_L);
+	SET_OUTPUT(PIN_CE_L);
+	SET_PIN_LOW(PIN_CE_L);
 
 	// Shift register outputs
 	SET_OUTPUT(PIN_A_RCK);
+	SET_PIN_HIGH(PIN_A_RCK);
 	SET_OUTPUT(PIN_A_SCK);
+	SET_PIN_HIGH(PIN_A_SCK);
 	SET_OUTPUT(PIN_A_SER);
+	SET_PIN_LOW(PIN_A_SER);
 	SET_OUTPUT(PIN_A_OE_L);
+	SET_PIN_LOW(PIN_A_OE_L);
 
 	SET_OUTPUT(PIN_A16);
+	SET_PIN_LOW(PIN_A16);
 }
 
 // Sets the address based on the least significant 17 bits of the passed in address value
@@ -64,12 +74,13 @@ void set_address(uint32_t address) {
 		SET_PIN_HIGH(PIN_A_SCK);
 	}
 	SET_PIN_HIGH(PIN_A_RCK);
-	SET_PIN_LOW(PIN_A_RCK);
 
 	SET_PIN(PIN_A16, address >> 16);
 
 	// Enable shift register output
 	SET_PIN_LOW(PIN_A_OE_L);
+	// Propagation delay
+	_delay_us(1);
 }
 
 void set_data(uint8_t data) {

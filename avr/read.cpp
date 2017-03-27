@@ -1,5 +1,4 @@
 #include <avr/io.h>
-#include <util/delay.h>
 
 #include "pin_config.h"
 #include "states.h"
@@ -39,7 +38,6 @@ state_t handle_read() {
 	uint8_t checksum = 0;
 	for (; start != end; start++) {
 		set_address(start);
-		_delay_us(1);
 
 		uint8_t data = 0;
 		data = data | GET_PIN(PIN_D0);

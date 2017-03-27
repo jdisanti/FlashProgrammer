@@ -1,10 +1,11 @@
+extern crate byteorder;
 #[macro_use]
 extern crate clap;
 extern crate serial;
 
+mod constants;
 mod read;
 mod write;
-mod erase;
 mod serial_port;
 
 fn main() {
@@ -19,10 +20,7 @@ fn main() {
         (@subcommand write =>
             (about: "writes the contents of a file to the ROM")
             (@arg DEVICE: +required "Sets the serial port to use")
-            (@arg INPUT: +required "Sets the input file to read from"))
-        (@subcommand erase =>
-            (about: "erases the ROM")
-            (@arg DEVICE: +required "Sets the serial port to use")))
+            (@arg INPUT: +required "Sets the input file to read from")))
         .get_matches();
 
     if let Some(ref matches) = matches.subcommand_matches("read") {
@@ -31,7 +29,5 @@ fn main() {
     } else if let Some(ref matches) = matches.subcommand_matches("write") {
         write::write_rom(matches.value_of("DEVICE").unwrap(),
                          matches.value_of("INPUT").unwrap());
-    } else if let Some(ref matches) = matches.subcommand_matches("erase") {
-        erase::erase_rom(matches.value_of("DEVICE").unwrap());
     }
 }

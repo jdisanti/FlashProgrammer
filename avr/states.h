@@ -7,7 +7,7 @@ typedef enum {
 	READ = 1,
 
 	WRITE_BEGIN = 4,
-	WRITE_BYTE = 5,
+	WRITE_BLOCK = 5,
 	WRITE_END = 6,
 
 	ERASE = 7,
@@ -15,7 +15,7 @@ typedef enum {
 
 state_t handle_read();
 state_t handle_write_begin();
-state_t handle_write_byte();
+state_t handle_write_block();
 state_t handle_write_end();
 state_t handle_erase();
 

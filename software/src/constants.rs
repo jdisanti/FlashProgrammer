@@ -1,0 +1,1 @@
+pub const ROM_SIZE: usize = 131072;

@@ -4,5 +4,6 @@ version = "0.1.0"
 authors = ["John DiSanti <johndisanti@gmail.com>"]
 
 [dependencies]
+byteorder = "1.0"
 clap = "2.22"
 serial = "0.3"

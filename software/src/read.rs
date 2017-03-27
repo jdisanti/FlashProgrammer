@@ -1,14 +1,13 @@
 use std::path::Path;
 use std::io::prelude::*;
 use std::fs::File;
+use byteorder::ReadBytesExt;
 
+use constants::ROM_SIZE;
 use serial_port;
 
 const BLOCK_SIZE: usize = 256;
-const ROM_SIZE: usize = 131072;
-
 const COMMAND_READ: u8 = 0x55;
-
 const MAX_FAILURES: usize = 3;
 
 fn push_address(buffer: &mut Vec<u8>, address: usize) {
@@ -27,65 +26,62 @@ fn test_push_address() {
     assert_eq!(0xDD, command[2]);
 }
 
-pub fn read_rom<P: AsRef<Path>>(device: &str, output_path: P) {
-    let mut serial_port = serial_port::open(device);
+fn generate_read_command(start_index: usize, end_index: usize) -> Vec<u8> {
+    let mut command: Vec<u8> = Vec::new();
+    command.push(COMMAND_READ);
+    push_address(&mut command, start_index);
+    push_address(&mut command, end_index);
+    command
+}
 
-    let mut file_contents: Vec<u8> = Vec::new();
-
+pub fn read_rom_to_vec<S: Read + Write>(mut serial_port: S, rom_contents: &mut Vec<u8>) {
     let block_count = ROM_SIZE / BLOCK_SIZE;
     let mut block: Vec<u8> = vec![0; BLOCK_SIZE];
     for block_index in 0..block_count {
         let start_index = block_index * BLOCK_SIZE;
         let end_index = start_index + BLOCK_SIZE;
 
-        println!("Reading {} byte block {} of {} (0x{:06X} - 0x{:06X})...", BLOCK_SIZE, block_index + 1, block_count, start_index, end_index);
+        println!("Reading {} byte block {} of {}...", BLOCK_SIZE, block_index + 1, block_count);
         let mut failures = 0;
         loop {
-            let mut command: Vec<u8> = Vec::new();
-            command.push(COMMAND_READ);
-            push_address(&mut command, start_index);
-            push_address(&mut command, end_index);
-            if let Err(err) = serial_port.write_all(&command) {
-                panic!("Failed to send read command: {}", err);
+            let command = generate_read_command(start_index, end_index);
+            serial_port.write_all(&command).expect("Failed to send read command");
+
+            let ack = serial_port.read_u8().expect("Error receiving ACK from flash programmer");
+            if ack != 0 {
+                panic!("Bad ACK from flash programmer: 0x{:02X}", ack);
             }
 
-            let mut ack = [0u8; 1];
-            if let Err(err) = serial_port.read_exact(&mut ack) {
-                panic!("Error receiving ACK from flash programmer: {}", err);
-            }
-            if ack[0] != 0 {
-                panic!("Bad ACK from flash programmer: 0x{:02X}", ack[0]);
-            }
-
-            if let Err(err) = serial_port.read_exact(&mut block) {
-                panic!("Failed to read data from the ROM: {}", err);
-            }
-
-            let mut checksum = [0u8; 1];
-            if let Err(err) = serial_port.read_exact(&mut checksum) {
-                panic!("Failed to read checksum from ROM: {}", err);
-            }
+            serial_port.read_exact(&mut block).expect("Failed to read data from the ROM");
 
             // Verify the checksum and retry if it fails
-            if 0 == checksum[0].wrapping_add(block.iter().fold(0, |acc, &data| acc.wrapping_add(data))) {
+            let checksum = serial_port.read_u8().expect("Failed to read checksum from ROM");
+            if 0 == checksum.wrapping_add(block.iter().fold(0, |acc, &data| acc.wrapping_add(data))) {
                 // Block read successfully; don't retry
                 break;
             } else if failures < MAX_FAILURES {
-                println!("Checksum verification failed. Retrying block.");
+                println!("Checksum verification failed. Retrying block");
                 failures += 1;
             } else {
-                panic!("Failed to read block too many times. Giving up.");
+                panic!("Failed to read block too many times. Giving up");
             }
         }
 
-        file_contents.extend(block.iter());
+        rom_contents.extend(block.iter());
     }
+}
+
+pub fn read_rom<P: AsRef<Path>>(device: &str, output_path: P) {
+    let mut serial_port = serial_port::open(device);
+    let mut rom_contents: Vec<u8> = Vec::new();
+
+    read_rom_to_vec(&mut serial_port, &mut rom_contents);
 
     let mut file = match File::create(output_path.as_ref()) {
         Ok(file) => file,
         Err(err) => panic!("Failed to open file {:?}: {}", output_path.as_ref(), err),
     };
-    if let Err(err) = file.write_all(&file_contents) {
+    if let Err(err) = file.write_all(&rom_contents) {
         panic!("Failed to write ROM contents to file {:?}: {}", output_path.as_ref(), err);
     }
 }

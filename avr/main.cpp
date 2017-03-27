@@ -34,8 +34,8 @@ state_t handle_state(state_t state) {
 		return handle_read();
 	case WRITE_BEGIN:
 		return handle_write_begin();
-	case WRITE_BYTE:
-		return handle_write_byte();
+	case WRITE_BLOCK:
+		return handle_write_block();
 	case WRITE_END:
 		return handle_write_end();
 	case ERASE:
