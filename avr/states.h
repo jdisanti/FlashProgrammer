@@ -4,13 +4,13 @@
 typedef enum {
 	NULL_STATE = 0,
 
-	READ = 1,
+	STATE_READ = 1,
 
-	WRITE_BEGIN = 4,
-	WRITE_BLOCK = 5,
-	WRITE_END = 6,
+	STATE_WRITE_BEGIN = 4,
+	STATE_WRITE_BLOCK = 5,
+	STATE_WRITE_END = 6,
 
-	ERASE = 7,
+	STATE_ERASE = 7,
 } state_t;
 
 state_t handle_read();

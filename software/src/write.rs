@@ -34,6 +34,9 @@ pub fn write_rom<P: AsRef<Path>>(device: &str, input_path: P) {
     let mut serial_port = serial_port::open(device);
     erase_rom(&mut serial_port);
     serial_port.write_u8(COMMAND_WRITE).expect("Failed to send write command");
+    if 0 != serial_port.read_u8().expect("Error receiving command ACK") {
+        panic!("Unexpected ACK value for write command");
+    }
 
     let block_count = ROM_SIZE / BLOCK_SIZE;
     for block_index in 0..block_count {
@@ -51,6 +54,10 @@ pub fn write_rom<P: AsRef<Path>>(device: &str, input_path: P) {
         if ack != 0 {
             panic!("Received error while writing to ROM: 0x{:02X}", ack);
         }
+    }
+
+    if 1 != serial_port.read_u8().expect("Error receiving done ACK") {
+        panic!("Unexpected done ACK value");
     }
 
     let mut actual_rom_contents: Vec<u8> = Vec::new();

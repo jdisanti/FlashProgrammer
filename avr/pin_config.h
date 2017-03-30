@@ -61,4 +61,8 @@ void data_input_mode();
 void set_address(uint32_t address);
 void set_data(uint8_t data);
 
+void reset_12v();
+void set_12v_vpp();
+void set_12v_vpp_a9();
+
 #endif /* PIN_CONFIG_H_ */

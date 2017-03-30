@@ -93,3 +93,39 @@ void set_data(uint8_t data) {
 	SET_PIN(PIN_D6, data >> 6);
 	SET_PIN(PIN_D7, data >> 7);
 }
+
+// Brings the VPP pin of the ROM back to 12V, and
+// returns control of the A9 pin to the shift registers
+void reset_12v() {
+	SET_PIN_HIGH(PIN_VPP_12V_EN_L);
+	SET_PIN_HIGH(PIN_A9_VPP_EN_L);
+
+	// It takes around 13 milliseconds for the voltage to return to normal
+	// according to the MAX662A's datasheet
+	// Let's wait longer to play it safe
+	_delay_ms(20);
+}
+
+inline void wait_for_12v_assertion() {
+	// It takes about 400 microseconds for the MAX662A's output to reach 12V, and
+	// the max value _delay_us takes at 8 MHz is 96
+	_delay_us(96);
+	_delay_us(96);
+	_delay_us(96);
+	_delay_us(96);
+	_delay_us(16);
+}
+
+// Asserts 12V on the VPP pin of the ROM
+void set_12v_vpp() {
+	SET_PIN_HIGH(PIN_A9_VPP_EN_L);
+	SET_PIN_LOW(PIN_VPP_12V_EN_L);
+	wait_for_12v_assertion();
+}
+
+// Asserts 12V on the VPP and A9 pins of the ROM
+void set_12v_vpp_a9() {
+	SET_PIN_LOW(PIN_A9_VPP_EN_L);
+	SET_PIN_LOW(PIN_VPP_12V_EN_L);
+	wait_for_12v_assertion();
+}
