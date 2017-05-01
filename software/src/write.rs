@@ -21,15 +21,28 @@ fn erase_rom<S: Read + Write>(mut serial_port: S) {
 }
 
 pub fn write_rom<P: AsRef<Path>>(device: &str, input_path: P) {
-    let mut rom_contents = vec![0u8; ROM_SIZE];
-    let mut file = match File::open(input_path.as_ref()) {
+    let mut rom_contents = Vec::new();
+    let file = match File::open(input_path.as_ref()) {
         Ok(file) => file,
         Err(err) => panic!("Failed to open ROM file \"{:?}\": {}", input_path.as_ref(), err),
     };
-    if let Err(err) = file.read_exact(&mut rom_contents) {
-        panic!("Failed to read exactly {} bytes from ROM file \"{:?}\": {}", ROM_SIZE, input_path.as_ref(), err);
+    let mut file_view = file.take(ROM_SIZE as u64);
+    match file_view.read_to_end(&mut rom_contents) {
+        Ok(bytes_read) => {
+            print!("Read {} bytes from the ROM file", bytes_read);
+            if bytes_read < ROM_SIZE {
+                println!(". Since this is less than the chip can hold, the remainder will be flashed to 0x00.");
+            } else {
+                println!(".");
+            }
+        },
+        Err(err) => {
+            panic!("Failed to read from ROM file \"{:?}\": {}", input_path.as_ref(), err);
+        }
     }
-    drop(file);
+    drop(file_view);
+
+    rom_contents.resize(ROM_SIZE, 0u8);
 
     let mut serial_port = serial_port::open(device);
     erase_rom(&mut serial_port);
@@ -46,7 +59,7 @@ pub fn write_rom<P: AsRef<Path>>(device: &str, input_path: P) {
         println!("Writing {} byte block {} of {}...", BLOCK_SIZE, block_index + 1, block_count);
 
         let block: &[u8] = &rom_contents[start_index..end_index];
-        let checksum: u8 = -(block.iter().fold(0, |acc: u8, &data| acc.wrapping_add(data)) as i8) as u8;
+        let checksum: u8 = (block.iter().fold(0, |acc: u8, &data| acc.wrapping_add(data)) as i8).wrapping_neg() as u8;
         serial_port.write_all(block).expect("Failed to send block");
         serial_port.write_u8(checksum).expect("Failed to send checksum");
 
