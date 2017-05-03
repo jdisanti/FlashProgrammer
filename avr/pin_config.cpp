@@ -64,11 +64,8 @@ void init_pins() {
 
 // Sets the address based on the least significant 17 bits of the passed in address value
 void set_address(uint32_t address) {
-	// Disable shift register output
-	SET_PIN_HIGH(PIN_A_OE_L);
-
 	SET_PIN_LOW(PIN_A_RCK);
-	for (int i = 15; i >= 0; i--) {
+	for (int8_t i = 15; i >= 0; i--) {
 		SET_PIN_LOW(PIN_A_SCK);
 		SET_PIN(PIN_A_SER, address >> i);
 		SET_PIN_HIGH(PIN_A_SCK);
@@ -77,8 +74,6 @@ void set_address(uint32_t address) {
 
 	SET_PIN(PIN_A16, address >> 16);
 
-	// Enable shift register output
-	SET_PIN_LOW(PIN_A_OE_L);
 	// Propagation delay
 	_delay_us(1);
 }
@@ -107,13 +102,9 @@ void reset_12v() {
 }
 
 inline void wait_for_12v_assertion() {
-	// It takes about 400 microseconds for the MAX662A's output to reach 12V, and
-	// the max value _delay_us takes at 8 MHz is 96
-	_delay_us(96);
-	_delay_us(96);
-	_delay_us(96);
-	_delay_us(96);
-	_delay_us(16);
+	// It takes about 400 microseconds for the MAX662A's output to reach 12V
+	// Rounding that up to 1 millisecond just to be sure
+	 _delay_ms(1);
 }
 
 // Asserts 12V on the VPP pin of the ROM

@@ -50,22 +50,6 @@ int main() {
 
 	set_address(0);
 
-	// TODO: Debug code; remove this
-	/*while (1) {
-		for (uint16_t i = 0; i < 0xFFFF; i++) {
-			SET_PIN_HIGH(PIN_PGM_L);
-			set_address(i);
-			_delay_ms(1);
-			SET_PIN_LOW(PIN_PGM_L);
-			_delay_ms(1);
-			SET_PIN_HIGH(PIN_PGM_L);
-		}
-		for (uint8_t i = 0; i < 0xFF; i++) {
-			_delay_ms(10);
-		}
-	}*/
-	// END REMOVE
-
 	state_t current_state = NULL_STATE;
     while (1) {
 		current_state = handle_state(current_state);
