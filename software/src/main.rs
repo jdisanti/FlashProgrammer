@@ -2,6 +2,7 @@ extern crate byteorder;
 #[macro_use]
 extern crate clap;
 extern crate serial;
+extern crate term;
 
 mod constants;
 mod read;

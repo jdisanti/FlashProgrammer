@@ -2,6 +2,7 @@ use std::path::Path;
 use std::io::prelude::*;
 use std::fs::File;
 use byteorder::ReadBytesExt;
+use term;
 
 use constants::ROM_SIZE;
 use serial_port;
@@ -35,13 +36,16 @@ fn generate_read_command(start_index: usize, end_index: usize) -> Vec<u8> {
 }
 
 pub fn read_rom_to_vec<S: Read + Write>(mut serial_port: S, rom_contents: &mut Vec<u8>) {
+    let mut t = term::stdout().unwrap();
+
     let block_count = ROM_SIZE / BLOCK_SIZE;
     let mut block: Vec<u8> = vec![0; BLOCK_SIZE];
     for block_index in 0..block_count {
         let start_index = block_index * BLOCK_SIZE;
         let end_index = start_index + BLOCK_SIZE;
 
-        println!("Reading {} byte block {} of {}...", BLOCK_SIZE, block_index + 1, block_count);
+        write!(t, "Reading {} byte block {} of {}...", BLOCK_SIZE, block_index + 1, block_count).unwrap();
+        t.carriage_return().unwrap();
         let mut failures = 0;
         loop {
             let command = generate_read_command(start_index, end_index);
@@ -60,7 +64,7 @@ pub fn read_rom_to_vec<S: Read + Write>(mut serial_port: S, rom_contents: &mut V
                 // Block read successfully; don't retry
                 break;
             } else if failures < MAX_FAILURES {
-                println!("Checksum verification failed. Retrying block");
+                println!("\nChecksum verification failed. Retrying block");
                 failures += 1;
             } else {
                 panic!("Failed to read block too many times. Giving up");

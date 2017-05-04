@@ -2,6 +2,7 @@ use std::path::Path;
 use std::io::prelude::*;
 use std::fs::File;
 use byteorder::{ReadBytesExt, WriteBytesExt};
+use term;
 
 use constants::ROM_SIZE;
 use read::read_rom_to_vec;
@@ -21,6 +22,8 @@ fn erase_rom<S: Read + Write>(mut serial_port: S) {
 }
 
 pub fn write_rom<P: AsRef<Path>>(device: &str, input_path: P) {
+    let mut t = term::stdout().unwrap();
+
     let mut rom_contents = Vec::new();
     let file = match File::open(input_path.as_ref()) {
         Ok(file) => file,
@@ -56,7 +59,8 @@ pub fn write_rom<P: AsRef<Path>>(device: &str, input_path: P) {
         let start_index = block_index * BLOCK_SIZE;
         let end_index = start_index + BLOCK_SIZE;
 
-        println!("Writing {} byte block {} of {}...", BLOCK_SIZE, block_index + 1, block_count);
+        write!(t, "Writing {} byte block {} of {}...", BLOCK_SIZE, block_index + 1, block_count).unwrap();
+        t.carriage_return().unwrap();
 
         let block: &[u8] = &rom_contents[start_index..end_index];
         let checksum: u8 = (block.iter().fold(0, |acc: u8, &data| acc.wrapping_add(data)) as i8).wrapping_neg() as u8;
@@ -68,6 +72,7 @@ pub fn write_rom<P: AsRef<Path>>(device: &str, input_path: P) {
             panic!("Received error while writing to ROM: 0x{:02X}", ack);
         }
     }
+    println!("");
 
     if 1 != serial_port.read_u8().expect("Error receiving done ACK") {
         panic!("Unexpected done ACK value");
@@ -84,5 +89,7 @@ pub fn write_rom<P: AsRef<Path>>(device: &str, input_path: P) {
     }
     if different != 0 {
         panic!("Verification of written contents failed. {} bytes different", different);
+    } else {
+        println!("\nVerified content written successfully.");
     }
 }
