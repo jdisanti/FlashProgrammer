@@ -74,8 +74,12 @@ void set_address(uint32_t address) {
 
 	SET_PIN(PIN_A16, address >> 16);
 
-	// Propagation delay
-	_delay_us(1);
+	// We have to wait quite a while for the A9 line to change its value
+	// due to the capacitance in the trace after the diodes. This could
+	// be improved by adding a pull-down resistor.
+	for (int8_t i = 0; i < 3; i++) {
+		_delay_us(80);
+	}
 }
 
 void set_data(uint8_t data) {
