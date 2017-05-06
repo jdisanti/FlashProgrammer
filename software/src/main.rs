@@ -13,19 +13,34 @@
 extern crate byteorder;
 #[macro_use]
 extern crate clap;
+#[macro_use]
+extern crate derive_error_chain;
+extern crate error_chain;
 extern crate serial;
 extern crate term;
 
 mod constants;
+mod error;
 mod read;
 mod write;
+mod progress;
 mod serial_port;
 
+use error::*;
+use std::process::exit;
+
+fn handle_result(result: Result<()>) {
+    if let Err(err) = result {
+        println!("{}", err);
+        exit(1);
+    }
+}
+
 fn main() {
-    let matches = clap_app!(flash_programmer =>
+    let mut app = clap_app!(flash_programmer =>
         (version: "1.0")
-        (author: "John DiSanti <johndisanti@gmail.com>")
-        (about: "Flash programmer software")
+        (author: "Copyright 2017 John DiSanti")
+        (about: "128K 17-bit Addressed 32-pin Flash ROM Programmer Software")
         (@subcommand read =>
             (about: "reads contents of flash ROM to file")
             (@arg DEVICE: +required "Sets the serial port to use")
@@ -33,14 +48,16 @@ fn main() {
         (@subcommand write =>
             (about: "writes the contents of a file to the ROM")
             (@arg DEVICE: +required "Sets the serial port to use")
-            (@arg INPUT: +required "Sets the input file to read from")))
-        .get_matches();
+            (@arg INPUT: +required "Sets the input file to read from")));
 
+    let matches = app.clone().get_matches();
     if let Some(ref matches) = matches.subcommand_matches("read") {
-        read::read_rom(matches.value_of("DEVICE").unwrap(),
-                       matches.value_of("OUTPUT").unwrap());
+        handle_result(read::read_rom(matches.value_of("DEVICE").unwrap(),
+                                     matches.value_of("OUTPUT").unwrap()));
     } else if let Some(ref matches) = matches.subcommand_matches("write") {
-        write::write_rom(matches.value_of("DEVICE").unwrap(),
-                         matches.value_of("INPUT").unwrap());
+        handle_result(write::write_rom(matches.value_of("DEVICE").unwrap(),
+                                       matches.value_of("INPUT").unwrap()));
+    } else {
+        drop(app.print_help());
     }
 }

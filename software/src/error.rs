@@ -10,20 +10,13 @@
 // permissions and limitations under the License.
 //
 
-/// Size of the Flash ROMs supported by this device
-pub const ROM_SIZE: usize = 131072;
+#[derive(Debug, error_chain)]
+pub enum FlashError {
+    Msg(String),
 
-/// Size of chunks that are individually transmitted and checksummed
-pub const BLOCK_SIZE: usize = 256;
+    #[error_chain(foreign)]
+    Io(::std::io::Error),
 
-/// Max attempts before failing
-pub const MAX_FAILURES: usize = 3;
-
-/// Command byte for starting a read
-pub const COMMAND_READ: u8 = 0x55;
-
-/// Command byte for erasing the ROM
-pub const COMMAND_ERASE: u8 = 0xEE;
-
-/// Command byte for starting the write sequence
-pub const COMMAND_WRITE: u8 = 0xAA;
+    #[error_chain(foreign)]
+    Term(::term::Error),
+}

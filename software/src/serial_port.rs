@@ -12,6 +12,8 @@
 
 use std::time::Duration;
 
+use error::*;
+
 use serial;
 use serial::prelude::*;
 
@@ -20,22 +22,17 @@ const SERIAL_SETTINGS: serial::PortSettings = serial::PortSettings {
     char_size: serial::Bits8,
     parity: serial::ParityNone,
     stop_bits: serial::Stop1,
-    flow_control: serial::FlowNone
+    flow_control: serial::FlowNone,
 };
 
-pub fn open(device: &str) -> serial::SystemPort {
-    let mut serial_port = match serial::open(device) {
-        Ok(port) => port,
-        Err(err) => panic!("Failed to open serial port: {}", err),
-    };
-
-    if let Err(err) = serial_port.configure(&SERIAL_SETTINGS) {
-        panic!("Failed to configure the serial port: {}", err);
-    }
-
-    if let Err(err) = serial_port.set_timeout(Duration::from_secs(1)) {
-        panic!("Failed to set timeout on serial port: {}", err);
-    }
-
+pub fn open(device: &str) -> Result<serial::SystemPort> {
+    let mut serial_port = serial::open(device)
+        .chain_err(|| format!("Failed to open serial port {}", device))?;
     serial_port
+        .configure(&SERIAL_SETTINGS)
+        .chain_err(|| "Failed to configure the serial port")?;
+    serial_port
+        .set_timeout(Duration::from_secs(1))
+        .chain_err(|| "Failed to set timeout on serial port")?;
+    Ok(serial_port)
 }
