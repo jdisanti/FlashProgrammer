@@ -1,4 +1,4 @@
-ATMEGA328P,U,,,,
+ATMEGA328-AU,U,,,,
 ,,,,,
 Pin,Unit,Type,Name,Side,Hidden
 12,B,bidirectional,PB0(CLK0/ICP1/PCINT0),left,N

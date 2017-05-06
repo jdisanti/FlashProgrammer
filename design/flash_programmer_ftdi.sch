@@ -1,6 +1,6 @@
 EESchema Schematic File Version 2
 LIBS:gls27sf010
-LIBS:atmega328p
+LIBS:atmega328au
 LIBS:flash_programmer
 LIBS:power
 LIBS:device

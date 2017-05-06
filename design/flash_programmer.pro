@@ -30,7 +30,7 @@ version=1
 LibDir=../symbol_generation
 [eeschema/libraries]
 LibName1=gls27sf010
-LibName2=atmega328p
+LibName2=atmega328au
 LibName3=flash_programmer
 LibName4=power
 LibName5=device
