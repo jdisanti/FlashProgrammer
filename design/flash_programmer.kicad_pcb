@@ -1,9 +1,9 @@
 (kicad_pcb (version 4) (host pcbnew 4.0.5)
 
   (general
-    (links 0)
+    (links 141)
     (no_connects 0)
-    (area 38.049999 38.049999 99.110001 76.250001)
+    (area 20.32 32.86 151.462859 196.955)
     (thickness 1.6)
     (drawings 59)
     (tracks 716)
@@ -12,7 +12,13 @@
     (nets 73)
   )
 
-  (page A4)
+  (page USLetter)
+  (title_block
+    (title "GLS27SF010 Flash Programmer")
+    (date 2017-05-06)
+    (company "Copyright 2017 John DiSanti")
+  )
+
   (layers
     (0 F.Cu signal)
     (31 B.Cu signal)
@@ -70,7 +76,7 @@
     (aux_axis_origin 0 0)
     (visible_elements 7FFFFFFF)
     (pcbplotparams
-      (layerselection 0x10000_00000000)
+      (layerselection 0x01100_00000001)
       (usegerberextensions false)
       (excludeedgelayer true)
       (linewidth 0.100000)
@@ -83,14 +89,14 @@
       (hpglpendiameter 15)
       (hpglpenoverlay 2)
       (psnegative false)
-      (psa4output true)
+      (psa4output false)
       (plotreference false)
       (plotvalue true)
       (plotinvisibletext false)
       (padsonsilk false)
       (subtractmaskfromsilk false)
-      (outputformat 2)
-      (mirror true)
+      (outputformat 4)
+      (mirror false)
       (drillshape 0)
       (scaleselection 1)
       (outputdirectory C:/Users/jdisanti/Desktop/))
@@ -2482,7 +2488,7 @@
       (xy -0.026262 5.547126) (xy 0 5.547126) (xy 0.209014 5.547002)) (layer B.SilkS) (width 0.01))
   )
 
-  (gr_text "Copyright 2017 John DiSanti\n\nCopyright and related rights are licensed under the Solderpad Hardware License, Version 0.51 (the \"License\");\nyou may not use this document except in compliance with the License. You may obtain a copy of the License at\nhttp://solderpad.org/licenses/SHL-0.51. Unless required by applicable law or agreed to in writing, software,\nhardware and materials distributed under this License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES\nOR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing\npermissions and limitations under the License." (at 25.4 180.34) (layer Dwgs.User)
+  (gr_text "Copyright and related rights are licensed under the Solderpad Hardware License, Version 0.51 (the \"License\");\nyou may not use this document except in compliance with the License. You may obtain a copy of the License at\nhttp://solderpad.org/licenses/SHL-0.51. Unless required by applicable law or agreed to in writing, software,\nhardware and materials distributed under this License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES\nOR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing\npermissions and limitations under the License." (at 20.32 189.23) (layer Dwgs.User)
     (effects (font (size 1.5 1.5) (thickness 0.3)) (justify left))
   )
   (gr_line (start 38.1 76.2) (end 38.1 38.1) (layer B.Fab) (width 0.2))

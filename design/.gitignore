@@ -5,7 +5,6 @@
 *.kicad_pcb-bak
 *.tmp
 *~
-/*.csv
 /*.net
 /*.ses
 /*.xml
