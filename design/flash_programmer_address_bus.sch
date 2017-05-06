@@ -40,7 +40,7 @@ Sheet 5 7
 Title "GLS27SF010 Flash Programmer"
 Date "2017-03-11"
 Rev "5"
-Comp "John DiSanti"
+Comp "Copyright 2017 John DiSanti"
 Comment1 ""
 Comment2 ""
 Comment3 ""
@@ -347,4 +347,8 @@ Text Notes 6750 3400 0    60   ~ 0
 A_SER\n  Serial input for the shift registers.\n\nA_SCK\n  Shift register clock input. Shifts input from\n  A_SER on its rising edge.\n\nA_RCK\n  Storage register clock input. Moves register\n  contents to output latches on rising edge.\n\nA_OE_L\n  Output enable for shift registers. When HIGH,\n  the address pins will go into tri-state.\n\nA[0..15]\n  Address bus output.
 Text Notes 8150 1600 2    118  ~ 0
 Signal Descriptions
+Wire Notes Line
+	2800 5300 2800 6050
+Text Notes 1750 6400 0    60   ~ 0
+A future revision can remove the A_OE_L signal\nand instead just pull these pins low since the\nsignal had to always be kept low in software anyway.
 $EndSCHEMATC

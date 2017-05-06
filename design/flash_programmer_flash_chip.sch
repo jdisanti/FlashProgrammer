@@ -40,7 +40,7 @@ Sheet 3 7
 Title "GLS27SF010 Flash Programmer"
 Date "2017-03-11"
 Rev "5"
-Comp "John DiSanti"
+Comp "Copyright 2017 John DiSanti"
 Comment1 ""
 Comment2 ""
 Comment3 ""
@@ -410,4 +410,8 @@ F 3 "" H 7900 5150 50  0000 C CNN
 	1    7900 5150
 	-1   0    0    -1  
 $EndComp
+Wire Notes Line
+	5900 4750 5900 5100
+Text Notes 5000 5450 0    60   ~ 0
+A future revision should add a pull-down\nresistor to the A9 line here so that the A9\nsignal can propagate faster than 160uS.
 $EndSCHEMATC

@@ -40,7 +40,7 @@ Sheet 6 7
 Title "GLS27SF010 Flash Programmer"
 Date "2017-03-11"
 Rev "5"
-Comp "John DiSanti"
+Comp "Copyright 2017 John DiSanti"
 Comment1 ""
 Comment2 ""
 Comment3 ""
@@ -121,7 +121,7 @@ Wire Wire Line
 Wire Wire Line
 	9500 6100 9500 6250
 Text Notes 8700 6650 0    60   ~ 0
-Bypass capacitors for ATMEGA328P
+Bypass capacitors for ATMEGA328
 $Comp
 L R R601
 U 1 1 58C24693
