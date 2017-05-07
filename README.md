@@ -12,6 +12,10 @@ own 8-bit computer. I made a lot of mistakes along the way and learned a ton.
 After four PCB revisions, and hours of frustrating debugging, I finally got it
 to successfully erase, write, and verify the contents of a ROM.
 
+## Demo
+
+![flash_programmer_software_anim](https://cloud.githubusercontent.com/assets/433028/25777995/9b1d9e92-32a5-11e7-9655-252ced548c46.gif)
+
 ## Project Structure
 
 The `avr/` directory contains all of the software to be run on the Atmel
