@@ -1,6 +1,8 @@
 128KiB 17-bit Addressed 32-pin Flash ROM Programmer
 ---------------------------------------------------
 
+![Flash Programmer](https://cloud.githubusercontent.com/assets/433028/25777077/942ec242-3286-11e7-87ff-ce14017144b7.jpg)
+
 This package includes the schematic, PCB design, and software for an USB
 Flash Programmer to read/write the contents of 128KiB 32-pin Flash ROM chips,
 such as the GLS27SF010 by Greenliant.
